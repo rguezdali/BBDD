@@ -149,3 +149,17 @@ FROM USER_OBJECTS
 WHERE OBJECT_TYPE = 'PROCEDURE';
 
 /* Recorrer cada departamento, para cada uno se calcuque cuanto se gasta en salario y se inserte en la tabla nueva */
+--Primero creamos el procedimiento
+CREATE OR REPLACE PROCEDURE spInsertaDEPT2
+(a dept2.deptno%type, b dept2.dname%type, c dept2.loc%type, d dept2.total%type)
+is
+begin
+
+insert into dept2(deptno, dname, loc, total)
+values (a,b,c,d);
+
+end;
+/
+show errors;
+
+--Luego lo hacemos con un bloque anónimo llamando al procedimiento:
