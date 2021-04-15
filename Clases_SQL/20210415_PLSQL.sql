@@ -128,3 +128,14 @@ SHOW ERRORS;
 CREATE TABLE DEPT2 AS SELECT DEPTNO, DNAME, LOC, 0 AS TOTAL
 FROM DEPT
 WHERE 1 = 0;
+
+--Con esto de vemos todos los objetos que tenga uno creado:
+SELECT *
+FROM ALL_OBJECTS
+
+--Con esto tenemos todas las tablas que hemos creado:
+SELECT OBJECT_NAME
+FROM USER_OBJECTS
+WHERE OBJECT_TYPE = 'TABLE';
+
+/* Recorrer cada departamento, para cada uno se calcuque cuanto se gasta en salario y se inserte en la tabla nueva */
