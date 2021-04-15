@@ -121,3 +121,10 @@ OPEN C_EMP;
 END;
 /
 SHOW ERRORS;
+
+/*
+ * Aquí hemos copiad 3 columnas de la tabla dept en una nueva, estando las filas vacías
+ */
+CREATE TABLE DEPT2 AS SELECT DEPTNO, DNAME, LOC, 0 AS TOTAL
+FROM DEPT
+WHERE 1 = 0;
