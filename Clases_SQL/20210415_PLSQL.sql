@@ -29,5 +29,5 @@ end;
 show errors;
 /
 --Con esto tendríamos creada la función correspondiente.
-select DevolverCodDept('SaLeS') from dual;
+select DevolverCodDept('SaLeSs') from dual; --Habría que quitarle la última 's' porque es para que falle.
 --Y esta línea del select es una prueba de que la función está hecha correctamente.
