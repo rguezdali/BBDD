@@ -138,4 +138,9 @@ SELECT OBJECT_NAME
 FROM USER_OBJECTS
 WHERE OBJECT_TYPE = 'TABLE';
 
+--Y con esto comprobamos las funciones:
+SELECT OBJECT_NAME
+FROM USER_OBJECTS
+WHERE OBJECT_TYPE = 'FUNCTION';
+
 /* Recorrer cada departamento, para cada uno se calcuque cuanto se gasta en salario y se inserte en la tabla nueva */
