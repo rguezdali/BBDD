@@ -31,3 +31,30 @@ show errors;
 --Con esto tendríamos creada la función correspondiente.
 select DevolverCodDept('SaLeSs') from dual; --Habría que quitarle la última 's' porque es para que falle.
 --Y esta línea del select es una prueba de que la función está hecha correctamente.
+
+/* 
+ * Un cursor es una forma de llevarte una tabla o consulta entera a memoria.
+ */
+DECLARE
+  CURSOR C_EMP
+  IS SELECT EMPNO, ENAME, SAL
+    FROM EMP
+    ORDER BY 1 DESC;
+    
+  V_EMPNO EMP.EMPNO%TYPE;
+  V_ENAME EMP.ENAME%TYPE;
+  V_SAL EMP.SAL%TYPE;
+  
+BEGIN
+
+OPEN C_EMP;
+
+  LOOP --Esto hace un bucle pero nunca para.
+    FETCH C_EMP INTO V_EMPNO, V_ENAME, V_SAL; --Con esto cargamos lo que hay dentro del cursor, pero solo una vez.
+    DBMS_OUTPUT.PUT_LINE(V_ENAME||' COBRA '||V_SAL);
+    EXIT WHEN C_EMP%NOTFOUND; --Con esto haces que el bucle tenga un final cuando no encuentre nada más nuevo.
+  END LOOP; --Debido al bucle salen a veces 2 veces los datos aunque solo estén una vez en las tablas. Porque al acabar repite una vez más y añade una nueva a modo de "copia" de otra.
+
+END;
+/
+--Aquí hay una "breve" explicación de lo que es un cursor más el ejemplo que hace.
