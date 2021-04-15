@@ -2,10 +2,18 @@
  * En la base de datos de jardinería
  */
  
+ /* Ejemplo para en otra tabla hallar al alumno más viejo:
+SELECT * FROM ALUMNOS
+WHERE EDAD = (SELECT MAX(EDAD) FROM ALUMNOS); */
+
 --DECIR EL PAIS DONDE SE HA GASTADO MAS  
-/* Con esto de aquí abajo lo que hacemos es el unir las tablas */
-SELECT *
+SELECT C.PAIS, SUM(DP.CANTIDAD*DP.PRECIOUNIDAD) --EL SUM PONE TODO LO QUE GASTA CADA PAIS
 FROM CLIENTES C, PEDIDOS P, DETALLEPEDIDOS DP
 WHERE C.CODIGOCLIENTE = P.CODIGOCLIENTE
 AND P.CODIGOPEDIDO = DP.CODIGOPEDIDO
-;
+GROUP BY C.PAIS
+HAVING SUM(DP.CANTIDAD*DP.PRECIOUNIDAD) = (SELECT MAX(SUM(DP.CANTIDAD*DP.PRECIOUNIDAD)) --ESTO COGE EL MAXIMO DE LO QUE GASTA CADA PAIS
+                                          FROM CLIENTES C, PEDIDOS P, DETALLEPEDIDOS DP
+                                          WHERE C.CODIGOCLIENTE = P.CODIGOCLIENTE
+                                          AND P.CODIGOPEDIDO = DP.CODIGOPEDIDO
+                                          GROUP BY C.PAIS);
