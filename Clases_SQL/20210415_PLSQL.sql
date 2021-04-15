@@ -143,4 +143,9 @@ SELECT OBJECT_NAME
 FROM USER_OBJECTS
 WHERE OBJECT_TYPE = 'FUNCTION';
 
+--Con este último hacemos lo mismo pero para ver los procedimientos:
+SELECT OBJECT_NAME
+FROM USER_OBJECTS
+WHERE OBJECT_TYPE = 'PROCEDURE';
+
 /* Recorrer cada departamento, para cada uno se calcuque cuanto se gasta en salario y se inserte en la tabla nueva */
