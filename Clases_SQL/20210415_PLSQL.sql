@@ -58,3 +58,30 @@ OPEN C_EMP;
 END;
 /
 --Aquí hay una "breve" explicación de lo que es un cursor más el ejemplo que hace.
+
+/* Utilizando un cursor, decir cuanto cobran en conjunto todos los empleados */
+DECLARE
+  CURSOR C_EMP
+  IS SELECT EMPNO, ENAME, NVL(SAL,0)
+    FROM EMP
+    ORDER BY 1 DESC;
+    
+  SALARIO number := 0;
+  V_EMPNO EMP.EMPNO%TYPE;
+  V_ENAME EMP.ENAME%TYPE;
+  V_SAL EMP.SAL%TYPE;
+  
+BEGIN
+
+OPEN C_EMP;
+
+  LOOP 
+    FETCH C_EMP INTO V_EMPNO, V_ENAME, V_SAL; 
+    EXIT WHEN C_EMP%NOTFOUND; 
+    SALARIO := SALARIO + V_SAL;
+    DBMS_OUTPUT.PUT_LINE(V_ENAME||': '||SALARIO); --Con esto vamos viendo cada nombre con sus datos.
+  END LOOP; 
+  DBMS_OUTPUT.PUT_LINE(V_ENAME||' TOTAL: '||SALARIO); --Esto de aquí no sé si es exacto porque repite el último dato + total + el dato que tenía lo anterior.
+
+END;
+/
