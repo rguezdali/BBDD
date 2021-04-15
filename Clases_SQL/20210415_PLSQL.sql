@@ -85,3 +85,39 @@ OPEN C_EMP;
 
 END;
 /
+
+/* 1. Si empno es par debo de sumarle a cada salario el numero de letras de ename.
+ * 2. Si empno es impar le sumo el numero de letras de job. */
+DECLARE
+  CURSOR C_EMP
+  IS SELECT EMPNO, ENAME, NVL(SAL,0), JOB
+    FROM EMP
+    ORDER BY 1 DESC;
+    
+  SALARIO NUMBER := 0;
+  V_EMPNO EMP.EMPNO%TYPE;
+  V_ENAME EMP.ENAME%TYPE;
+  V_SAL EMP.SAL%TYPE;
+  V_JOB EMP.JOB%TYPE;
+  
+BEGIN
+
+OPEN C_EMP;
+
+  LOOP 
+  
+    FETCH C_EMP INTO V_EMPNO, V_ENAME, V_SAL, V_JOB; 
+    EXIT WHEN C_EMP%NOTFOUND; 
+    
+    IF MOD(V_EMPNO,2) = 0 THEN
+      SALARIO := SALARIO + V_SAL + LENGTH(V_ENAME);
+    ELSE
+      SALARIO := SALARIO + V_SAL + LENGTH(V_JOB);
+    END IF;
+    
+  END LOOP; 
+  DBMS_OUTPUT.PUT_LINE('TOTAL: '||SALARIO); 
+
+END;
+/
+SHOW ERRORS;
