@@ -140,3 +140,95 @@ END IF;
 END;
 
 / SHOW ERRORS;
+
+--Crear y rellenar un paquete
+CREATE
+OR REPLACE PACKAGE pckDEPT is PROCEDURE spInsertaDEPT(
+    pdeptno dept.deptno % type,
+    pdname dept.dname % type,
+    ploc dept.loc % type
+);
+
+PROCEDURE spBorraDEPT(pdeptno dept.deptno % type);
+
+PROCEDURE spActualizaDEPT(
+    pdeptno dept.deptno % type,
+    pdname dept.dname % type,
+    ploc dept.loc % type
+);
+
+end;
+
+/ CREATE
+OR REPLACE PACKAGE body pckDEPT is PROCEDURE spInsertaDEPT(
+    pdeptno dept.deptno % type,
+    pdname dept.dname % type,
+    ploc dept.loc % type
+) is begin
+insert into
+    dept(deptno, dname, loc)
+values
+    (pdeptno, pdname, ploc);
+
+end;
+
+PROCEDURE spBorraDEPT(pdeptno dept.deptno % type) is begin
+delete from
+    dept
+where
+    deptno = pdeptno;
+
+end;
+
+PROCEDURE spActualizaDEPT(
+    pdeptno dept.deptno % type,
+    pdname dept.dname % type,
+    ploc dept.loc % type
+) is begin
+update
+    DEPT
+set
+    dname = pdname,
+    loc = ploc
+where
+    deptno = pdeptno;
+
+end;
+
+end;
+
+/ SHOW ERRORS;
+
+/ execute pckDEPT.spInsertaDEPT(33, 'NACHO', 'PERDON');
+
+/
+SELECT
+    *
+FROM
+    DEPT;
+
+/ execute pckDEPT.spBorraDEPT(33);
+
+/
+SELECT
+    *
+FROM
+    DEPT;
+
+--TAREA MÁS LO QUE QUIERE PARA EL PRÓXIMO DÍA:
+CREATE TABLE CALENDARIO (
+    FECHA DATE,
+    DIASEM INTEGER,
+    SEMANYO INT,
+    DIA INT,
+    MES INT,
+    ANYO INT
+);
+
+ALTER TABLE
+    CALENDARIO
+ADD
+    PRIMARY KEY (FECHA);
+
+/* AÑADIR 1000 DIAS A CALENDARIO A PARTIR DE 01/01/2020
+ PARA LA INSERCCION EN CALENDARIO, CREAR UN PROCEDIMIENTO. spInsertaCalendario */
