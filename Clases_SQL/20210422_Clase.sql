@@ -47,3 +47,17 @@ BEGIN V_TOTAL := :NEW.PRECIO * :NEW.UNIDAD;
 END;
 
 / SHOW ERRORS;
+
+--Aquí actualizamos la tabla creada para los triggers:
+/* INSERT INTO ORDERS (ID,NOMBRE, PRECIO,UNIDAD) VALUES (3,'HOLA2', 33,3); */
+UPDATE
+    ORDERS
+SET
+    SUBTOTAL = 33
+WHERE
+    ID = 1;
+
+SELECT
+    *
+FROM
+    ORDERS;
