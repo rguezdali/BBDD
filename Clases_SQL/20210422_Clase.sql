@@ -77,3 +77,34 @@ SELECT
     *
 FROM
     ORDERS;
+
+--Alteramos en la tabla de BK haciendo un insert con valores
+CREATE
+OR REPLACE TRIGGER ORDERS_BK
+AFTER
+UPDATE
+    OR DELETE ON ORDERS FOR EACH ROW BEGIN
+insert into
+    orders_copia(
+        id,
+        nombre,
+        precio,
+        unidad,
+        subtotal,
+        deptno,
+        fecha
+    )
+values
+    (
+        :OLD.id,
+        :OLD.nombre,
+        :OLD.precio,
+        :OLD.unidad,
+        :OLD.subtotal,
+        :OLD.deptno,
+        sysdate
+    );
+
+END;
+
+/ SHOW ERRORS;
