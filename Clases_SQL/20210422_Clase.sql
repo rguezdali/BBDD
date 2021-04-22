@@ -47,24 +47,6 @@ BEGIN V_TOTAL := :NEW.PRECIO * :NEW.UNIDAD;
 END;
 
 / SHOW ERRORS;
-                                              
---Versión óptima de lo anterior:
-CREATE
-OR REPLACE TRIGGER ActualizaSubtotal --NOMBRE
-BEFORE --CUANDO
-INSERT
-    OR
-UPDATE
-    --ACCIONES QUE DISPARAN EL CODIGO PLSQL
-    ON ORDERS --EN QUE TABLA SE REALIZA LA ACCION 
-    FOR EACH ROW --POR CADA FILA
-    DECLARE V_TOTAL NUMBER;
-
-BEGIN :NEW.SUBTOTAL := :NEW.PRECIO * :NEW.UNIDAD;
-
-END;
-
-/ SHOW ERRORS;
 
 --CON ERROR CONTROLADO:
 CREATE
@@ -122,6 +104,38 @@ values
         :OLD.deptno,
         sysdate
     );
+
+END;
+
+/ SHOW ERRORS;
+
+--Aquí abajo un ejercicio de clase:
+/* En la tabla orders, modificar el trigger ActualizaSubtotal de tal forma que si el id a 
+ insertar sea par multiplicar por 2 el subototal y si es impar dividir por 2, de la misma 
+ forma en las actualizaciones si el id es par multiplicar por 3 y si no lo es dividir por 3 */
+CREATE
+OR REPLACE TRIGGER ActualizaSubtotal --NOMBRE
+BEFORE --CUANDO
+INSERT
+    OR
+UPDATE
+    --ACCCIONES QUE DISPARAN EL CODIGO PLSQL
+    ON ORDERS -- EN QUE TABLA SE REALIZA LA ACCION 
+    FOR EACH ROW DECLARE V_AUX INTEGER := 2;
+
+BEGIN IF MOD(:NEW.ID, 2) = 0 THEN IF UPDATING THEN V_AUX := 3;
+
+END IF;
+
+ELSE V_AUX := 1 / 2;
+
+IF UPDATING THEN V_AUX := 1 / 3;
+
+END IF;
+
+END IF;
+
+:NEW.SUBTOTAL := :NEW.PRECIO * :NEW.UNIDAD * V_AUX;
 
 END;
 
