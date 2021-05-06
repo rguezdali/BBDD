@@ -71,3 +71,58 @@ END;
 /* QUE TRADUZCA LOS NOMBRES AL ESPAÑOL */
 SELECT DECODE(UPPER(O.CIUDAD),'TOKYO','TOKIO','SYDNEY','SIDNEY',UPPER(O.CIUDAD))
 FROM OFICINAS O;
+
+/* CÓMO ES HACER O TENER UN PAQUETE */
+CREATE OR REPLACE PACKAGE pckDEPT is
+
+  PROCEDURE spInsertaDEPT(pdeptno dept.deptno%type,pdname dept.dname%type,ploc dept.loc%type);
+  PROCEDURE spBorraDEPT(pdeptno dept.deptno%type);
+  PROCEDURE spActualizaDEPT(pdeptno dept.deptno%type,pdname dept.dname%type,ploc dept.loc%type);
+
+end;
+/
+CREATE OR REPLACE PACKAGE body pckDEPT is
+
+PROCEDURE spInsertaDEPT(pdeptno dept.deptno%type,pdname dept.dname%type,ploc dept.loc%type)
+is
+begin
+  insert into dept(deptno, dname, loc) values (pdeptno, pdname, ploc);
+end;
+PROCEDURE spBorraDEPT(pdeptno dept.deptno%type)
+is
+begin
+  delete from dept 
+  where deptno = pdeptno;
+end;
+
+PROCEDURE spActualizaDEPT(pdeptno dept.deptno%type,pdname dept.dname%type,ploc dept.loc%type)
+is
+begin
+  update DEPT
+  set dname = pdname,
+      loc = ploc
+  where deptno = pdeptno;
+end;
+
+end;
+
+/
+SHOW ERRORS;
+/
+
+execute pckDEPT.spInsertaDEPT(33,'NACHO','PERDON');
+/
+SELECT * FROM DEPT;
+/
+execute pckDEPT.spBorraDEPT(33);
+/
+SELECT * FROM DEPT;
+
+/* HACER UNA COPIA DE 3 TABLAS DEL DEPARTAMENTO: */
+DROP TABLE DEPT_COPIA_SAL;
+CREATE TABLE DEPT_COPIA_SAL 
+AS 
+SELECT DEPTNO AS NUMDEPT, DNAME AS NOMBRE, LOC AS LUGAR, 0  AS TOTAL_SALARIO
+FROM DEPT WHERE 1 =0;
+DESC DEPT_COPIA_SAL;
+
