@@ -85,6 +85,177 @@ DUP_VAL_ON_INDEX. (2 puntos)
 CREATE OR REPLACE FUNCTION fRellenarCalendario (pFecha Date, pNum int)
 return DATE
 IS
+       vFin int;
+       vFecha date;
 BEGIN
-NULL;
+
+       vFin := pNum-1;
+       vFecha := pFecha;
+         
+       if pNum > 0 then
+       
+         FOR k in 0..vFin
+         loop
+            BEGIN 
+            
+                insert into CALENDARIO(fecha, diasem, semanyo)    --Necesitas tener esto
+                values(pFecha+k, to_number(to_char(pFecha+k,'D')), to_number(to_char(pFecha+k,'WW')));
+            
+            EXCEPTION 
+            WHEN DUP_VAL_ON_INDEX THEN
+                vFin := vFin + 1;
+            END;
+         end loop;
+         vFecha := vFecha + vFin;
+       else 
+         vFecha := pFecha;
+       end if;
+       
+       return vFecha;
+       
+END;
+/
+show errors;
+
+/* v.1 Ejercicio directo de Antonio: */
+CREATE OR REPLACE FUNCTION fRellenarCalendario (pFecha Date, pNum int)
+return DATE
+IS
+  
+  vFin int;
+  vFecha date;
+  
+BEGIN
+
+  vFin := pNum-1;
+  vFecha := pFecha;
+
+if pNum>0 then
+
+  FOR k in 0..vFin
+  loop
+     
+    BEGIN
+  
+      insert into CALENDARIO(fecha,diasem,semanyo)
+      values (vFecha+k,to_number(to_char(vFecha+k,'D')),to_number(to_char(vFecha+k,'WW')));
+      
+    EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+      vFin := vFin +1;
+    END;
+  end loop;
+  
+  vFecha := vFecha+vFin;
+else
+  vFecha := pFecha;
+end if;  
+
+return vFecha;
+
+END;
+/
+SHOW ERRORS;
+
+/* v.2 Ejercicio directo de Antonio: */
+CREATE OR REPLACE FUNCTION fRellenarCalendario2 (pFecha Date, pNum int)
+return DATE
+IS
+  
+  vFin int;
+  vFecha date;
+    v_existe int:=0;
+  
+BEGIN
+
+  vFin := pNum-1;
+  vFecha := pFecha;
+
+if pNum>0 then
+
+  FOR k in 0..vFin
+  loop
+  
+     select nvl(count(fecha),0)
+     into v_existe
+     from calendario
+     where fecha=vFecha+k;
+     
+     if v_existe = 0 then
+        insert into CALENDARIO(fecha,diasem,semanyo)
+        values (vFecha+k,to_number(to_char(vFecha+k,'D')),to_number(to_char(vFecha+k,'WW')));
+      
+     else
+      vFin := vFin +1;
+    END if;
+  end loop;
+  
+  vFecha := vFecha+vFin;
+else
+  vFecha := pFecha;
+end if;  
+
+return vFecha;
+
+END;
+/
+SHOW ERRORS;
+
+-- v.1 SACAR EL QUE MÁS HA PAGADO CON PL/SQL
+CREATE OR REPLACE FUNCTION fClienteMasPaga
+return CLIENTES.NOMBRECLIENTE%TYPE --varchar2
+IS
+
+       vNombre CLIENTES.NOMBRECLIENTE%TYPE := '';
+
+BEGIN
+
+SELECT C.NOMBRECLIENTE into vNombre
+FROM CLIENTES C, PAGOS PA
+WHERE C.CODIGOCLIENTE = PA.CODIGOCLIENTE
+AND UPPER(C.NOMBRECLIENTE) LIKE '%A%'
+GROUP BY C.NOMBRECLIENTE
+HAVING SUM(PA.CANTIDAD)=(SELECT MAX(SUM(PA.CANTIDAD))
+                         FROM CLIENTES C, PAGOS PA
+                         WHERE C.CODIGOCLIENTE = PA.CODIGOCLIENTE
+                         AND UPPER(C.NOMBRECLIENTE) LIKE '%A%'
+                         GROUP BY C.NOMBRECLIENTE);
+      return vNombre;
+       
+END;
+/
+SHOW ERRORS;
+/
+--SELECT fClienteMasPaga() FROM DUAL;
+SET SERVEROUTPUT ON;
+BEGIN
+    DBMS_OUTPUT.PUT_LINE(fClienteMasPaga());
+END;
+
+-- v.2 SACAR EL QUE MÁS HA PAGADO CON PL/SQL
+CREATE OR REPLACE FUNCTION fClienteMasPaga2
+return CLIENTES.NOMBRECLIENTE%TYPE --varchar2
+IS
+
+       vNombre CLIENTES.NOMBRECLIENTE%TYPE := '';
+       vCantidadMax number := 0;
+
+BEGIN
+
+SELECT MAX(SUM(PA.CANTIDAD)) into vCantidadMax
+FROM CLIENTES C, PAGOS PA
+WHERE C.CODIGOCLIENTE = PA.CODIGOCLIENTE
+AND UPPER(C.NOMBRECLIENTE) LIKE '%A%'
+GROUP BY C.NOMBRECLIENTE;
+
+      return vNombre;
+       
+END;
+/
+SHOW ERRORS;
+/
+--SELECT fClienteMasPaga() FROM DUAL;
+SET SERVEROUTPUT ON;
+BEGIN
+    DBMS_OUTPUT.PUT_LINE(fClienteMasPaga());
 END;
