@@ -240,7 +240,6 @@ END;
 /
 SHOW ERRORS;
 
-
 /*
  * Ejercicio aparte
  */
